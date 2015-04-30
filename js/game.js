@@ -22,8 +22,8 @@ function setup()
 function createScene()
 {
 	// set the scene size
-	var WIDTH = 640,
-	  HEIGHT = 360;
+	var WIDTH = window.innerWidth,
+	  HEIGHT = window.innerHeight;
 
 	// set some camera attributes
 	var VIEW_ANGLE = 75,
@@ -42,14 +42,15 @@ function createScene()
 		ASPECT,
 		NEAR,
 		FAR);
-	camera.position.z = 500;
+	camera.position.z = 400;
 	
 	scene = new THREE.Scene();
 
 	scene.add(camera);
 	geometry = new THREE.IcosahedronGeometry(200,1);
-	material = new THREE.MeshBasicMaterial({color:0x88BB77,
-		wireframe: true, wireframeLinewidth: 2	} );
+
+	var image = THREE.ImageUtils.loadTexture('textures/strange.jpg');
+	material = new THREE.MeshBasicMaterial({map:image} );
 
 	mesh = new THREE.Mesh(geometry, material);
 	scene.add(mesh);
