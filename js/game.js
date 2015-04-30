@@ -1,5 +1,8 @@
 // scene object variables
-var renderer, scene, camera, pointLight, spotLight;
+var renderer, scene, camera;
+
+var geometry, material, mesh;
+
 
 // field variables
 var fieldWidth = 400, fieldHeight = 200;
@@ -7,12 +10,7 @@ var fieldWidth = 400, fieldHeight = 200;
 
 function setup()
 {
-	// update the board to reflect the max score for match win
-	document.getElementById("winnerBoard").innerHTML = "First to " + maxScore + " wins!";
 	
-	// now reset player and opponent scores
-	score1 = 0;
-	score2 = 0;
 	
 	// set up all the 3D objects in the scene	
 	createScene();
@@ -28,10 +26,10 @@ function createScene()
 	  HEIGHT = 360;
 
 	// set some camera attributes
-	var VIEW_ANGLE = 50,
+	var VIEW_ANGLE = 75,
 	  ASPECT = WIDTH / HEIGHT,
-	  NEAR = 0.1,
-	  FAR = 10000;
+	  NEAR = 1,
+	  FAR = 1000;
 
 	var c = document.getElementById("gameCanvas");
 
@@ -44,32 +42,39 @@ function createScene()
 		ASPECT,
 		NEAR,
 		FAR);
-
+	camera.position.z = 500;
+	
 	scene = new THREE.Scene();
 
-	// add the camera to the scene
 	scene.add(camera);
+	geometry = new THREE.IcosahedronGeometry(200,1);
+	material = new THREE.MeshBasicMaterial({color:0x88BB77,
+		wireframe: true, wireframeLinewidth: 2	} );
+
+	mesh = new THREE.Mesh(geometry, material);
+	scene.add(mesh);
+
 	
-	// set a default position for the camera
-	// not doing this somehow messes up shadow rendering
-	camera.position.z = 320;
 	
-	// start the renderer
+	
 	renderer.setSize(WIDTH, HEIGHT);
 
-	// attach the render-supplied DOM element
+	
 	c.appendChild(renderer.domElement);
 
-	// MAGIC SHADOW CREATOR DELUXE EDITION with Lights PackTM DLC
-	renderer.shadowMapEnabled = true;		
+	
 }
 
 function draw()
 {	
-	// draw THREE.JS scene
-	renderer.render(scene, camera);
-	// loop draw function call
 	requestAnimationFrame(draw);
+
+	mesh.rotation.x = Date.now() * 0.00005;
+	mesh.rotation.y = Date.now() * 0.0001;	
+
+	renderer.render(scene, camera);
+	
+	
 	
 
 }
