@@ -51,7 +51,17 @@ function createScene()
 	scene.add(camera);
 	geometry = new THREE.IcosahedronGeometry(200,1);
 
-	var image = THREE.ImageUtils.loadTexture('textures/strange.jpg');
+	var strangeTexture = THREE.ImageUtils.loadTexture('textures/strange.jpg');
+	var strangeMaterial = new THREE.MeshBasicMaterial({map:strangeTexture});
+	
+	var spotsTexture = THREE.ImageUtils.loadTexture('textures/spots.jpg');
+	var spotsMaterial = new THREE.MeshBasicMaterial({map:spotsTexture});
+
+	var blueTexture = THREE.ImageUtils.loadTexture('textures/blue.jpg');
+	var blueMaterial = new THREE.MeshBasicMaterial({map:blueTexture});
+
+	var watercolorTexture = THREE.ImageUtils.loadTexture('textures/watercolor.jpg');
+	var watercolorMaterial = new THREE.MeshBasicMaterial({map:watercolorTexture});
 	//material = new THREE.MeshBasicMaterial({map:image} );
 
 	//mesh = new THREE.Mesh(geometry, material);
@@ -67,10 +77,13 @@ function createScene()
 
 	var geo = new THREE.BoxGeometry(1,1,1);
 	geo.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
-	var material = new THREE.MeshBasicMaterial({map:image});
+	
+	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
 	
 	_.range(0,300).forEach(function(index){
-		generateBuilding(index, geo, material, scene);
+		var materialIndex = _.random(0,3);
+		var randomMaterial = materials[materialIndex];
+		generateBuilding(index, geo, randomMaterial, scene);
 	});
 
 }
