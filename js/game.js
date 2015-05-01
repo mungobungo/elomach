@@ -35,16 +35,16 @@ function createScene()
 
 	// create a WebGL renderer, camera
 	// and a scene
-	renderer = new THREE.WebGLRenderer();
+	renderer = new THREE.WebGLRenderer({antialias: true});
 	camera =
 	  new THREE.PerspectiveCamera(
 		VIEW_ANGLE,
 		ASPECT,
 		NEAR,
 		FAR);
-	camera.position.z = 700;
+	camera.position.z = 1200;
 	camera.position.y = 900;
-	camera.rotation.x = -45 * Math.PI/180;
+	camera.rotation.x = -35 * Math.PI/180;
 	
 	scene = new THREE.Scene();
 
@@ -71,7 +71,7 @@ function createScene()
 	
 	
 	renderer.setSize(WIDTH, HEIGHT);
-
+	renderer.shadowMapEnabled = true;
 	
 	c.appendChild(renderer.domElement);
 
@@ -80,23 +80,39 @@ function createScene()
 	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
 	//var materials = [blueMaterial];
 	materials.forEach(function(material){
-		var city = generateCity(200, material);
+		var city = generateCity(100, material);
+		city.castShadow = true;
+		city.receiveShadow = true;
 		scene.add(city);	
 	});
 	
 	generateFloor();
-	var light = new THREE.DirectionalLight(0xee44bb, 1)	;
-	light.position.set(1,3,2);
-	scene.add(light);
-
-	scene.fog = new THREE.FogExp2(0x99bbbb, 0.001);
+	
+	turnLightOn();
+	scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
+
+function turnLightOn(){
+	var light = new THREE.DirectionalLight(0xee44bb, 1);
+	light.castShadow = true;
+	light.shadowDarkness = 0.5;
+	light.shadowMapWidth = 2048;
+	light.shadowMapHeight = 2048;
+	light.position.set(500,1500,1000);
+	light.shadowCameraLeft = -2000;
+	light.shadowCameraRight = 2000;
+	light.shadowCameraTop = 2000;
+	light.shadowCameraBottom = -2000;
+	scene.add(light);	
+}
+
 function generateFloor(){
 	var geo = new THREE.PlaneGeometry(2000,2000,20,20);
 	var mat = new THREE.MeshBasicMaterial({color:0x2266cc});
 	var floor = new THREE.Mesh(geo, mat);
 	floor.rotation.x = -90 * Math.PI / 180;
+	floor.receiveShadow = true;
 	scene.add(floor);
 
 }
