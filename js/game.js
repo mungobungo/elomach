@@ -22,8 +22,8 @@ function setup()
 function createScene()
 {
 	// set the scene size
-	var WIDTH = window.innerWidth,
-	  HEIGHT = window.innerHeight;
+	var WIDTH = window.innerWidth*0.98,
+	  HEIGHT = window.innerHeight*0.98;
 
 	// set some camera attributes
 	var VIEW_ANGLE = 75,
@@ -75,23 +75,37 @@ function createScene()
 	
 	c.appendChild(renderer.domElement);
 
-	var geo = new THREE.BoxGeometry(1,1,1);
-	geo.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
+	
 	
 	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
 	
-	_.range(0,300).forEach(function(index){
-		var materialIndex = _.random(0,3);
-		var randomMaterial = materials[materialIndex];
-		generateBuilding(index, geo, randomMaterial, scene);
+	materials.forEach(function(material){
+		var city = generateCity(100, material);
+		scene.add(city);	
 	});
+	
 
 }
+function generateCity(buildingCount, material){
 
-function generateBuilding(index, geo, material, scene){
+	var geo = new THREE.BoxGeometry(1,1,1);
+	geo.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
+	var cityGeometry = new THREE.Geometry();
+	
+	_.range(0,buildingCount).forEach(function(index){
+		
+		var building = generateBuilding(geo);
+		THREE.GeometryUtils.merge(cityGeometry, building);
+	});
+	
+	return new THREE.Mesh(cityGeometry, material);
+	
+}
+
+function generateBuilding(geo){
 	var floor = Math.floor;
 	var rnd = Math.random;
-	var building = new THREE.Mesh(geo.clone(), material.clone());
+	var building = new THREE.Mesh(geo.clone());
 	var pos = building.position;
 	var scale = building.scale;
 	
@@ -100,7 +114,7 @@ function generateBuilding(index, geo, material, scene){
 	scale.x = rnd()*50 +10;
 	scale.y = rnd()*scale.x*8 + 8;
 	scale.z = scale.x;
-	scene.add(building);
+	return building;
 
 }
 
