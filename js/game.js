@@ -3,6 +3,8 @@ var renderer, scene, camera;
 
 var geometry, mesh;
 
+var controls, clock;
+
 
 // field variables
 var fieldWidth = 400, fieldHeight = 200;
@@ -14,8 +16,11 @@ function setup()
 	
 	// set up all the 3D objects in the scene	
 	createScene();
+	clock = new THREE.Clock();
+	controls = new THREE.FirstPersonControls(camera);
+	controls.movementSpeed = 100;
+	controls.lookSpeed = 0.01;
 	
-	// and let's get cracking!
 	draw();
 }
 
@@ -43,8 +48,8 @@ function createScene()
 		NEAR,
 		FAR);
 	camera.position.z = 1200;
-	camera.position.y = 900;
-	camera.rotation.x = -35 * Math.PI/180;
+	camera.position.y = 100;
+	camera.rotation.x = 0;//-35 * Math.PI/180;
 	
 	scene = new THREE.Scene();
 
@@ -151,14 +156,9 @@ function generateBuilding(geo){
 
 function draw()
 {	
-	requestAnimationFrame(draw);
-
-	
 
 	renderer.render(scene, camera);
-	
-	
-	
-
+	controls.update(clock.getDelta());
+	requestAnimationFrame(draw);
 }
 
