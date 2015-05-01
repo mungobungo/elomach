@@ -29,7 +29,7 @@ function createScene()
 	var VIEW_ANGLE = 75,
 	  ASPECT = WIDTH / HEIGHT,
 	  NEAR = 1,
-	  FAR = 1000;
+	  FAR = 10000;
 
 	var c = document.getElementById("gameCanvas");
 
@@ -42,9 +42,9 @@ function createScene()
 		ASPECT,
 		NEAR,
 		FAR);
-	camera.position.z = 400;
-	camera.position.y = 400;
-	camera.position.x = -45 * Math.PI/180;
+	camera.position.z = 700;
+	camera.position.y = 900;
+	camera.rotation.x = -45 * Math.PI/180;
 	
 	scene = new THREE.Scene();
 
@@ -78,17 +78,26 @@ function createScene()
 	
 	
 	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
-	
+	//var materials = [blueMaterial];
 	materials.forEach(function(material){
-		var city = generateCity(100, material);
+		var city = generateCity(200, material);
 		scene.add(city);	
 	});
 	
+	generateFloor();
 	var light = new THREE.DirectionalLight(0xee44bb, 1)	;
 	light.position.set(1,3,2);
 	scene.add(light);
 
-	scene.fog = new THREE.Fog(0x99bbbb, 0.002);
+	scene.fog = new THREE.FogExp2(0x99bbbb, 0.001);
+
+}
+function generateFloor(){
+	var geo = new THREE.PlaneGeometry(2000,2000,20,20);
+	var mat = new THREE.MeshBasicMaterial({color:0x2266cc});
+	var floor = new THREE.Mesh(geo, mat);
+	floor.rotation.x = -90 * Math.PI / 180;
+	scene.add(floor);
 
 }
 function generateCity(buildingCount, material){
@@ -111,14 +120,15 @@ function generateBuilding(geo){
 	var floor = Math.floor;
 	var rnd = Math.random;
 	var building = new THREE.Mesh(geo.clone());
-	var pos = building.position;
-	var scale = building.scale;
 	
-	pos.x = floor(rnd()*200 - 100) * 4;
-	pos.y = floor(rnd()*200 - 100) * 4;
-	scale.x = rnd()*50 +10;
-	scale.y = rnd()*scale.x*8 + 8;
-	scale.z = scale.x;
+	
+	
+	building.position.x = Math.floor((Math.random()*400 -200) * 4);
+	//building.position.y = Math.floor((Math.random()*200 -100) * 4);
+	building.position.z = Math.floor((Math.random()*400 -200) * 4);
+	building.scale.x = Math.random()*50 +10;
+	building.scale.y = Math.random()*building.scale.x*8 + 8;
+	building.scale.z = building.scale.x;
 	return building;
 
 }
