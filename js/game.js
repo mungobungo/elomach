@@ -1,7 +1,7 @@
 // scene object variables
 var renderer, scene, camera;
 
-var geometry, material, mesh;
+var geometry, mesh;
 
 
 // field variables
@@ -43,6 +43,8 @@ function createScene()
 		NEAR,
 		FAR);
 	camera.position.z = 400;
+	camera.position.y = 400;
+	camera.position.x = -45 * Math.PI/180;
 	
 	scene = new THREE.Scene();
 
@@ -50,10 +52,10 @@ function createScene()
 	geometry = new THREE.IcosahedronGeometry(200,1);
 
 	var image = THREE.ImageUtils.loadTexture('textures/strange.jpg');
-	material = new THREE.MeshBasicMaterial({map:image} );
+	//material = new THREE.MeshBasicMaterial({map:image} );
 
-	mesh = new THREE.Mesh(geometry, material);
-	scene.add(mesh);
+	//mesh = new THREE.Mesh(geometry, material);
+	//scene.add(mesh);
 
 	
 	
@@ -63,15 +65,37 @@ function createScene()
 	
 	c.appendChild(renderer.domElement);
 
+	var geo = new THREE.BoxGeometry(1,1,1);
+	geo.applyMatrix(new THREE.Matrix4().makeTranslation(0,0.5,0));
+	var material = new THREE.MeshBasicMaterial({map:image});
 	
+	_.range(0,300).forEach(function(index){
+		generateBuilding(index, geo, material, scene);
+	});
+
+}
+
+function generateBuilding(index, geo, material, scene){
+	var floor = Math.floor;
+	var rnd = Math.random;
+	var building = new THREE.Mesh(geo.clone(), material.clone());
+	var pos = building.position;
+	var scale = building.scale;
+	
+	pos.x = floor(rnd()*200 - 100) * 4;
+	pos.y = floor(rnd()*200 - 100) * 4;
+	scale.x = rnd()*50 +10;
+	scale.y = rnd()*scale.x*8 + 8;
+	scale.z = scale.x;
+	scene.add(building);
+
 }
 
 function draw()
 {	
 	requestAnimationFrame(draw);
 
-	mesh.rotation.x = Date.now() * 0.00005;
-	mesh.rotation.y = Date.now() * 0.0001;	
+	
 
 	renderer.render(scene, camera);
 	
