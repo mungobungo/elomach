@@ -84,6 +84,11 @@ function createScene()
 		scene.add(city);	
 	});
 	
+	var light = new THREE.DirectionalLight(0xee44bb, 1)	;
+	light.position.set(1,3,2);
+	scene.add(light);
+
+	scene.fog = new THREE.Fog(0x99bbbb, 0.002);
 
 }
 function generateCity(buildingCount, material){
