@@ -1,4 +1,22 @@
-// scene object variables
+'use strict';
+
+var domready = require("domready");
+
+var THREE = require('./three.js');
+
+
+require('exports!./OBJLoader.js');
+//require('exports!./OBJLoader.js');
+
+
+require('exports!./FirstPersonControls.js');
+
+var _ = require('underscore');
+
+domready(function(){
+	setup();
+});
+
 var renderer, scene, camera;
 
 var geometry, mesh;
@@ -36,7 +54,7 @@ function createScene()
 	  NEAR = 1,
 	  FAR = 10000;
 
-	var c = document.getElementById("gameCanvas");
+	var c = document.getElementById('gameCanvas');
 
 	// create a WebGL renderer, camera
 	// and a scene
@@ -88,19 +106,52 @@ function createScene()
 		var city = generateCity(100, material);
 		city.castShadow = true;
 		city.receiveShadow = true;
-		scene.add(city);	
+		//scene.add(city);	
 	});
 	
 	generateFloor();
-	
+	loadModel();
 	turnLightOn();
-	scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
+	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
 
+function loadModel(){
+
+				var manager = new THREE.LoadingManager();
+				manager.onProgress = function ( item, loaded, total ) {
+					console.log( item, loaded, total );
+				};
+				var texture = new THREE.Texture();
+				var onProgress = function ( xhr ) {
+					if ( xhr.lengthComputable ) {
+						var percentComplete = xhr.loaded / xhr.total * 100;
+						console.log( Math.round(percentComplete, 2) + '% downloaded' );
+					}
+				};
+				var onError = function ( xhr ) {
+				};
+	var loader = new THREE.ImageLoader( manager );
+				loader.load( 'models/space_frigate/space_frigate_6_color.png', function ( image ) {
+					texture.image = image;
+					texture.needsUpdate = true;
+				} );
+
+	var loader = new THREE.OBJLoader( manager );
+				loader.load( 'models/space_frigate/space_frigate.obj', function ( object ) {
+					object.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							child.material.map = texture;
+						}
+					} );
+					object.position.y = 600;
+					object.position.z = 200;
+					scene.add( object );
+				}, onProgress, onError);
+}
 function turnLightOn(){
 	var light = new THREE.DirectionalLight(0xee44bb, 1);
-	light.castShadow = true;
+	light.castShadow = false;
 	light.shadowDarkness = 0.5;
 	light.shadowMapWidth = 2048;
 	light.shadowMapHeight = 2048;
@@ -110,15 +161,21 @@ function turnLightOn(){
 	light.shadowCameraTop = 2000;
 	light.shadowCameraBottom = -2000;
 	scene.add(light);	
+
+	var ambient = new THREE.AmbientLight( 0x101030 );
+	scene.add( ambient );
 }
 
 function generateFloor(){
-	var geo = new THREE.PlaneGeometry(2000,2000,20,20);
-	var mat = new THREE.MeshBasicMaterial({color:0x2266cc});
+	var geo = new THREE.PlaneGeometry(200,200,20,20);
+	var mat = new THREE.MeshBasicMaterial({color:0xbbcdd});
 	var floor = new THREE.Mesh(geo, mat);
 	floor.rotation.x = -90 * Math.PI / 180;
 	floor.receiveShadow = true;
 	scene.add(floor);
+	var wall = new THREE.Mesh(geo.clone(), mat.clone());
+	wall.rotation.y = -90 * Math.PI / 180;
+	scene.add(wall);
 
 }
 function generateCity(buildingCount, material){
