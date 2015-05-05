@@ -2,14 +2,11 @@
 
 var domready = require('domready');
 
-var THREE = require('./three.js');
+require('script!./three.js');
 
+require('script!./OBJLoader.js');
 
-require('exports!./OBJLoader.js');
-//require('exports!./OBJLoader.js');
-
-
-require('exports!./FirstPersonControls.js');
+require('script!./FirstPersonControls.js');
 
 var _ = require('underscore');
 

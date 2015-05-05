@@ -1,5 +1,5 @@
 'use strict'
-var THREE = require('./three.js');
+require('script!./three.js');
 
 function light(scene) {
 
