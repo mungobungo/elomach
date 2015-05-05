@@ -1,6 +1,6 @@
 'use strict';
 
-var domready = require("domready");
+var domready = require('domready');
 
 var THREE = require('./three.js');
 
@@ -13,19 +13,16 @@ require('exports!./FirstPersonControls.js');
 
 var _ = require('underscore');
 
+var light = require('./light.js');
 domready(function(){
 	setup();
 });
 
 var renderer, scene, camera;
 
-var geometry, mesh;
+var geometry;
 
 var controls, clock;
-
-
-// field variables
-var fieldWidth = 400, fieldHeight = 200;
 
 
 function setup()
@@ -37,7 +34,7 @@ function setup()
 	clock = new THREE.Clock();
 	controls = new THREE.FirstPersonControls(camera);
 	controls.movementSpeed = 100;
-	controls.lookSpeed = 0.01;
+	controls.lookSpeed = 0.0001;
 	
 	draw();
 }
@@ -65,9 +62,10 @@ function createScene()
 		ASPECT,
 		NEAR,
 		FAR);
-	camera.position.z = 1200;
-	camera.position.y = 100;
-	camera.rotation.x = 0;//-35 * Math.PI/180;
+	camera.position.z = 0;
+	camera.position.y = 50;
+	camera.position.x = -80;
+	camera.rotation.x = -30 * Math.PI/180;
 	
 	scene = new THREE.Scene();
 
@@ -102,16 +100,16 @@ function createScene()
 	
 	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
 	//var materials = [blueMaterial];
-	materials.forEach(function(material){
-		var city = generateCity(100, material);
-		city.castShadow = true;
-		city.receiveShadow = true;
-		//scene.add(city);	
-	});
+	// materials.forEach(function(material){
+	// 	var city = generateCity(100, material);
+	// 	city.castShadow = true;
+	// 	city.receiveShadow = true;
+	// 	//scene.add(city);	
+	// });
 	
 	generateFloor();
 	loadModel();
-	turnLightOn();
+	light(scene);
 	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
@@ -144,27 +142,12 @@ function loadModel(){
 							child.material.map = texture;
 						}
 					} );
-					object.position.y = 600;
-					object.position.z = 200;
+					object.position.y = 20;
+					object.position.z = 0;
 					scene.add( object );
 				}, onProgress, onError);
 }
-function turnLightOn(){
-	var light = new THREE.DirectionalLight(0xee44bb, 1);
-	light.castShadow = false;
-	light.shadowDarkness = 0.5;
-	light.shadowMapWidth = 2048;
-	light.shadowMapHeight = 2048;
-	light.position.set(500,1500,1000);
-	light.shadowCameraLeft = -2000;
-	light.shadowCameraRight = 2000;
-	light.shadowCameraTop = 2000;
-	light.shadowCameraBottom = -2000;
-	scene.add(light);	
 
-	var ambient = new THREE.AmbientLight( 0x101030 );
-	scene.add( ambient );
-}
 
 function generateFloor(){
 	var geo = new THREE.PlaneGeometry(200,200,20,20);
@@ -173,9 +156,7 @@ function generateFloor(){
 	floor.rotation.x = -90 * Math.PI / 180;
 	floor.receiveShadow = true;
 	scene.add(floor);
-	var wall = new THREE.Mesh(geo.clone(), mat.clone());
-	wall.rotation.y = -90 * Math.PI / 180;
-	scene.add(wall);
+	
 
 }
 function generateCity(buildingCount, material){
@@ -195,11 +176,8 @@ function generateCity(buildingCount, material){
 }
 
 function generateBuilding(geo){
-	var floor = Math.floor;
-	var rnd = Math.random;
+	
 	var building = new THREE.Mesh(geo.clone());
-	
-	
 	
 	building.position.x = Math.floor((Math.random()*400 -200) * 4);
 	//building.position.y = Math.floor((Math.random()*200 -100) * 4);
