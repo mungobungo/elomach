@@ -8,6 +8,10 @@ require('script!./three.js');
 
 require('script!./FirstPersonControls.js');
 
+require('script!./skymap/threex.skymap.js');
+require('script!./skymap/threex.texturecube.js');
+require('script!./skymap/threex.cubetexturehcross.js');
+
 var _ = require('underscore');
 
 var light = require('./light.js');
@@ -32,7 +36,7 @@ function setup()
 	clock = new THREE.Clock();
 	controls = new THREE.FirstPersonControls(camera);
 	controls.movementSpeed = 100;
-	controls.lookSpeed = 0.0001;
+	controls.lookSpeed = 0.01;
 	
 	draw();
 }
@@ -107,8 +111,13 @@ function createScene()
 	// 	//scene.add(city);	
 	// });
 	
-	generateFloor();
+	//generateFloor();
 
+
+
+	// "bridge2", "escher", "park2", "park3med", "pisa", "skybox", "swedishroyalcastle", "mars"
+	var mesh    = THREEx.createSkymap('skybox')
+	scene.add( mesh )
 	light(scene);
 	models(scene);
 	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
