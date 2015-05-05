@@ -1,12 +1,18 @@
 'use strict'
 require('script!./three.js');
 require('script!./OBJLoader.js');
+require('script!./OBJMTLLoader.js');
+require('script!./MTLLoader.js');
+require('script!./threex.spaceships.js');
 
 function models(scene) {
 
-	loadSpaceFrigate(scene);
+	//loadSpaceFrigate(scene);
+	loadSpaceFighther01(scene);
 }
 module.exports = models;
+
+
 
 function loadSpaceFrigate(scene){
 
@@ -40,4 +46,34 @@ function loadSpaceFrigate(scene){
 					object.position.z = 0;
 					scene.add( object );
 				}, onProgress, onError);
+}
+
+function loadSpaceFighther01(scene){
+	THREEx.SpaceShips.loadSpaceFighter01(function(object3d){
+    scene.add(object3d);
+	});
+}
+
+function loadSpaceFighther02(scene){
+THREEx.SpaceShips.loadSpaceFighter02(function(object3d){
+    scene.add(object3d);
+	});
+}
+
+function loadSpaceFighther03(scene){
+THREEx.SpaceShips.loadSpaceFighter03(function(object3d){
+    scene.add(object3d);
+	});
+}
+
+function loadShuttle01(scene){
+THREEx.SpaceShips.loadShuttle01(function(object3d){
+    scene.add(object3d);
+	});
+}
+
+function loadShuttle02(scene){
+THREEx.SpaceShips.loadShuttle02(function(object3d){
+    scene.add(object3d);
+	});
 }
