@@ -2,7 +2,7 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
-var THREE = require('./three.js');
+
 THREE.OBJLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;

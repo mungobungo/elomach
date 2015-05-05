@@ -1,6 +1,5 @@
 'use strict';
 
-var THREE = require('./three.js');
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
