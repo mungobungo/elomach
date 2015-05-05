@@ -4,7 +4,7 @@ var domready = require('domready');
 
 require('script!./three.js');
 
-require('script!./OBJLoader.js');
+
 
 require('script!./FirstPersonControls.js');
 
@@ -17,8 +17,6 @@ domready(function(){
 });
 
 var renderer, scene, camera;
-
-var geometry;
 
 var controls, clock;
 

@@ -1,5 +1,6 @@
 'use strict'
 require('script!./three.js');
+require('script!./OBJLoader.js');
 
 function models(scene) {
 
