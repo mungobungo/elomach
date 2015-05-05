@@ -11,6 +11,7 @@ require('script!./FirstPersonControls.js');
 var _ = require('underscore');
 
 var light = require('./light.js');
+var models = require('./models.js');
 domready(function(){
 	setup();
 });
@@ -67,20 +68,20 @@ function createScene()
 	scene = new THREE.Scene();
 
 	scene.add(camera);
-	geometry = new THREE.IcosahedronGeometry(200,1);
-
-	var strangeTexture = THREE.ImageUtils.loadTexture('textures/strange.jpg');
-	var strangeMaterial = new THREE.MeshBasicMaterial({map:strangeTexture});
 	
-	var spotsTexture = THREE.ImageUtils.loadTexture('textures/spots.jpg');
-	var spotsMaterial = new THREE.MeshBasicMaterial({map:spotsTexture});
 
-	var blueTexture = THREE.ImageUtils.loadTexture('textures/blue.jpg');
-	var blueMaterial = new THREE.MeshBasicMaterial({map:blueTexture});
+	// var strangeTexture = THREE.ImageUtils.loadTexture('textures/strange.jpg');
+	// var strangeMaterial = new THREE.MeshBasicMaterial({map:strangeTexture});
+	
+	// var spotsTexture = THREE.ImageUtils.loadTexture('textures/spots.jpg');
+	// var spotsMaterial = new THREE.MeshBasicMaterial({map:spotsTexture});
 
-	var watercolorTexture = THREE.ImageUtils.loadTexture('textures/watercolor.jpg');
-	var watercolorMaterial = new THREE.MeshBasicMaterial({map:watercolorTexture});
-	//material = new THREE.MeshBasicMaterial({map:image} );
+	// var blueTexture = THREE.ImageUtils.loadTexture('textures/blue.jpg');
+	// var blueMaterial = new THREE.MeshBasicMaterial({map:blueTexture});
+
+	// var watercolorTexture = THREE.ImageUtils.loadTexture('textures/watercolor.jpg');
+	// var watercolorMaterial = new THREE.MeshBasicMaterial({map:watercolorTexture});
+	// //material = new THREE.MeshBasicMaterial({map:image} );
 
 	//mesh = new THREE.Mesh(geometry, material);
 	//scene.add(mesh);
@@ -95,7 +96,7 @@ function createScene()
 
 	
 	
-	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
+//	var materials = [strangeMaterial, spotsMaterial, blueMaterial, watercolorMaterial];
 	//var materials = [blueMaterial];
 	// materials.forEach(function(material){
 	// 	var city = generateCity(100, material);
@@ -105,45 +106,14 @@ function createScene()
 	// });
 	
 	generateFloor();
-	loadModel();
+
 	light(scene);
+	models(scene);
 	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
 
-function loadModel(){
 
-				var manager = new THREE.LoadingManager();
-				manager.onProgress = function ( item, loaded, total ) {
-					console.log( item, loaded, total );
-				};
-				var texture = new THREE.Texture();
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-				var onError = function ( xhr ) {
-				};
-	var loader = new THREE.ImageLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate_6_color.png', function ( image ) {
-					texture.image = image;
-					texture.needsUpdate = true;
-				} );
-
-	var loader = new THREE.OBJLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate.obj', function ( object ) {
-					object.traverse( function ( child ) {
-						if ( child instanceof THREE.Mesh ) {
-							child.material.map = texture;
-						}
-					} );
-					object.position.y = 20;
-					object.position.z = 0;
-					scene.add( object );
-				}, onProgress, onError);
-}
 
 
 function generateFloor(){
