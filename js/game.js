@@ -12,6 +12,8 @@ var _ = require('underscore');
 
 var light = require('./light.js');
 var models = require('./models.js');
+var winResize = require('./windowResize');
+
 domready(function(){
 	setup();
 });
@@ -62,6 +64,8 @@ function createScene()
 	camera.position.y = 50;
 	camera.position.x = -80;
 	camera.rotation.x = -30 * Math.PI/180;
+	
+	var wr = new winResize(renderer, camera)
 	
 	scene = new THREE.Scene();
 
