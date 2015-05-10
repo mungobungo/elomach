@@ -17,21 +17,13 @@ function models(scene) {
 	var subscription = rx.Observable.merge(res1, res2).subscribe(
   		function (x) { 
   			console.log('onNext: %s', x); 
-  	// 		x.traverse(function(x){
-			// if( object3d.material ){
-			// 	object3d.material.emissive.set('white')
-			// }
-		// })
+  	
   			scene.add(x);
   		},
   		function (e) { console.log('onError: %s', e); },
   		function () { console.log('onCompleted'); }
   	);
-	// res.callback.onValue(function(val){ 
-	//  	console.log(val);
-	//  	
-	//  });
-		
+	
 	
 }
 module.exports = models;
@@ -42,7 +34,6 @@ module.exports = models;
 function loadObjMtl(scene, loader, resource){
 	
 
-	//var exists = rx.Observable.fromCallback(callback);
 	// Function called when downloads progress 
 	var progress = function ( xhr ) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); };
 
@@ -69,28 +60,4 @@ function loadObjMtl(scene, loader, resource){
 
 	return subject.asObservable();
 
-}
-
-function loadSpaceFighther02(scene){
-THREEx.SpaceShips.loadSpaceFighter02(function(object3d){
-    scene.add(object3d);
-	});
-}
-
-function loadSpaceFighther03(scene){
-THREEx.SpaceShips.loadSpaceFighter03(function(object3d){
-    scene.add(object3d);
-	});
-}
-
-function loadShuttle01(scene){
-THREEx.SpaceShips.loadShuttle01(function(object3d){
-    scene.add(object3d);
-	});
-}
-
-function loadShuttle02(scene){
-THREEx.SpaceShips.loadShuttle02(function(object3d){
-    scene.add(object3d);
-	});
 }
