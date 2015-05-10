@@ -3,77 +3,93 @@ require('script!./three.js');
 require('script!./OBJLoader.js');
 require('script!./OBJMTLLoader.js');
 require('script!./MTLLoader.js');
-require('script!./threex.spaceships.js');
+//var bacon = require('baconjs');
+var rx = require('rx');
+var _ = require('lodash');
 
 function models(scene) {
 
-	//loadSpaceFrigate(scene);
-	loadSpaceFighther01(scene);
+	
+	
+	var loader = new THREE.OBJMTLLoader(); 
+
+	var res1 = loadObjMtl(scene, loader, 'models/Shuttle01/Shuttle01');
+	var res2 = loadObjMtl(scene, loader, 'models/Shuttle02/Shuttle02');
+	var res3 = loadObjMtl(scene, loader, 'models/SpaceFighter01/SpaceFighter01');
+	var res4 = loadObjMtl(scene, loader, 'models/SpaceFighter02/SpaceFighter02');
+	var res5 = loadObjMtl(scene, loader, 'models/SpaceFighter03/SpaceFighter03');
+
+    var models_obs = rx.Observable.merge(res1, res2, res3, res4 ,res5);
+    
+    var spiral = rx.Observable.from(spiralGenerator(10,200));
+    var coords = rx.Observable.zip(spiral, models_obs, 
+    	function(coord, model){
+    		return {'coord': coord, 'model': model}
+    	});
+	
+	var subscription = coords.subscribe(
+  		function (item) { 
+  			console.log('onNext: %s', item.coord); 
+  			console.log('onNext: %s', item.model); 
+  	
+  			item.model.position.add(item.coord);
+  			scene.add(item.model);
+  		},
+  		function (e) { 
+  			console.log('onError: %s', e); 
+  		},
+  		function () { console.log('onCompleted'); }
+  	);
+
+	
+	
 }
 module.exports = models;
 
 
+function spiralGenerator(length, scale){
+	
+	
+	
+	var array = _.times(length, function(t) {
+  		
+		var x = scale * t * Math.cos(6 * t);
+		var y = scale * t * Math.sin(6* t);
+		var z = scale * t;
+		return new THREE.Vector3( x, y, z );
+  		
+	});
+	return array;	
 
-function loadSpaceFrigate(scene){
-
-				var manager = new THREE.LoadingManager();
-				manager.onProgress = function ( item, loaded, total ) {
-					console.log( item, loaded, total );
-				};
-				var texture = new THREE.Texture();
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-				var onError = function ( xhr ) {
-				};
-	var loader = new THREE.ImageLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate_6_color.png', function ( image ) {
-					texture.image = image;
-					texture.needsUpdate = true;
-				} );
-
-	var loader = new THREE.OBJLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate.obj', function ( object ) {
-					object.traverse( function ( child ) {
-						if ( child instanceof THREE.Mesh ) {
-							child.material.map = texture;
-						}
-					} );
-					object.position.y = 20;
-					object.position.z = 0;
-					scene.add( object );
-				}, onProgress, onError);
 }
 
-function loadSpaceFighther01(scene){
-	THREEx.SpaceShips.loadSpaceFighter01(function(object3d){
-    scene.add(object3d);
-	});
-}
+function loadObjMtl(scene, loader, resource){
+	
 
-function loadSpaceFighther02(scene){
-THREEx.SpaceShips.loadSpaceFighter02(function(object3d){
-    scene.add(object3d);
-	});
-}
+	// Function called when downloads progress 
+	var progress = function ( xhr ) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); };
 
-function loadSpaceFighther03(scene){
-THREEx.SpaceShips.loadSpaceFighter03(function(object3d){
-    scene.add(object3d);
-	});
-}
+	// Function called when downloads error 
+	var error = function ( xhr ) { console.log( 'An error happened' ); }
+	
+	
+	var subject = new Rx.AsyncSubject();
+	// load an obj / mtl resource pair 
+	loader.load( 
+	// OBJ resource URL 
+		resource + '.obj', 
+		// MTL resource UR
+		resource + '.mtl',
+		function(result) {
+            subject.onNext(result);
+            subject.onCompleted();
+    	}, 
+		progress, 
+		error 	
+	 );
 
-function loadShuttle01(scene){
-THREEx.SpaceShips.loadShuttle01(function(object3d){
-    scene.add(object3d);
-	});
-}
+	
 
-function loadShuttle02(scene){
-THREEx.SpaceShips.loadShuttle02(function(object3d){
-    scene.add(object3d);
-	});
+	return subject.asObservable();
+
 }
