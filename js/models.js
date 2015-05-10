@@ -3,55 +3,42 @@ require('script!./three.js');
 require('script!./OBJLoader.js');
 require('script!./OBJMTLLoader.js');
 require('script!./MTLLoader.js');
-require('script!./threex.spaceships.js');
+//require('script!./threex.spaceships.js');
 
 function models(scene) {
 
-	//loadSpaceFrigate(scene);
-	loadSpaceFighther01(scene);
+	// instantiate a loader 
+	var loader = new THREE.OBJMTLLoader(); 
+
+	loadObjMtl(scene, loader, 'models/SpaceFighter02/SpaceFighter02');
+	
 }
 module.exports = models;
 
 
 
-function loadSpaceFrigate(scene){
 
-				var manager = new THREE.LoadingManager();
-				manager.onProgress = function ( item, loaded, total ) {
-					console.log( item, loaded, total );
-				};
-				var texture = new THREE.Texture();
-				var onProgress = function ( xhr ) {
-					if ( xhr.lengthComputable ) {
-						var percentComplete = xhr.loaded / xhr.total * 100;
-						console.log( Math.round(percentComplete, 2) + '% downloaded' );
-					}
-				};
-				var onError = function ( xhr ) {
-				};
-	var loader = new THREE.ImageLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate_6_color.png', function ( image ) {
-					texture.image = image;
-					texture.needsUpdate = true;
-				} );
+function loadObjMtl(scene, loader, resource){
+	// load an obj / mtl resource pair 
+	loader.load( 
+	// OBJ resource URL 
+	resource + '.obj', 
+	// MTL resource UR
+	resource + '.mtl',
+	// Function when both resources are loaded 
+	function ( object ) { 
+		object.traverse(function(object3d){
+			if( object.material ){
+				object.material.emissive.set('white')
+			}
+		})
+		scene.add( object ); 
+	}, 
+	// Function called when downloads progress 
+	function ( xhr ) { console.log( (xhr.loaded / xhr.total * 100) + '% loaded' ); }, 
+	// Function called when downloads error 
+	function ( xhr ) { console.log( 'An error happened' ); } );
 
-	var loader = new THREE.OBJLoader( manager );
-				loader.load( 'models/space_frigate/space_frigate.obj', function ( object ) {
-					object.traverse( function ( child ) {
-						if ( child instanceof THREE.Mesh ) {
-							child.material.map = texture;
-						}
-					} );
-					object.position.y = 20;
-					object.position.z = 0;
-					scene.add( object );
-				}, onProgress, onError);
-}
-
-function loadSpaceFighther01(scene){
-	THREEx.SpaceShips.loadSpaceFighter01(function(object3d){
-    scene.add(object3d);
-	});
 }
 
 function loadSpaceFighther02(scene){
