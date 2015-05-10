@@ -35,8 +35,8 @@ function setup()
 	createScene();
 	clock = new THREE.Clock();
 	controls = new THREE.FirstPersonControls(camera);
-	controls.movementSpeed = 100;
-	controls.lookSpeed = 0.01;
+	controls.movementSpeed = 200;
+	controls.lookSpeed = 0.11;
 	
 	draw();
 }
