@@ -8,10 +8,16 @@ require('script!./three.js');
 
 require('script!./FirstPersonControls.js');
 
-var _ = require('underscore');
+require('script!./skymap/threex.skymap.js');
+require('script!./skymap/threex.texturecube.js');
+require('script!./skymap/threex.cubetexturehcross.js');
+
+var _ = require('lodash');
 
 var light = require('./light.js');
 var models = require('./models.js');
+var winResize = require('./windowResize');
+
 domready(function(){
 	setup();
 });
@@ -29,8 +35,8 @@ function setup()
 	createScene();
 	clock = new THREE.Clock();
 	controls = new THREE.FirstPersonControls(camera);
-	controls.movementSpeed = 100;
-	controls.lookSpeed = 0.0001;
+	controls.movementSpeed = 200;
+	controls.lookSpeed = 0.11;
 	
 	draw();
 }
@@ -42,7 +48,7 @@ function createScene()
 	  HEIGHT = window.innerHeight*0.98;
 
 	// set some camera attributes
-	var VIEW_ANGLE = 75,
+	var VIEW_ANGLE = 55,
 	  ASPECT = WIDTH / HEIGHT,
 	  NEAR = 1,
 	  FAR = 10000;
@@ -59,9 +65,11 @@ function createScene()
 		NEAR,
 		FAR);
 	camera.position.z = 0;
-	camera.position.y = 50;
+	camera.position.y = 0;
 	camera.position.x = -80;
 	camera.rotation.x = -30 * Math.PI/180;
+	
+	var wr = new winResize(renderer, camera)
 	
 	scene = new THREE.Scene();
 
@@ -103,10 +111,16 @@ function createScene()
 	// 	//scene.add(city);	
 	// });
 	
-	generateFloor();
+	//generateFloor();
 
+
+
+	// "bridge2", "escher", "park2", "park3med", "pisa", "skybox", "swedishroyalcastle", "mars"
+	var mesh    = THREEx.createSkymap('mars')
+	scene.add( mesh );
 	light(scene);
 	models(scene);
+
 	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
