@@ -12,7 +12,7 @@ require('script!./skymap/threex.skymap.js');
 require('script!./skymap/threex.texturecube.js');
 require('script!./skymap/threex.cubetexturehcross.js');
 
-var _ = require('underscore');
+var _ = require('lodash');
 
 var light = require('./light.js');
 var models = require('./models.js');
@@ -117,9 +117,10 @@ function createScene()
 
 	// "bridge2", "escher", "park2", "park3med", "pisa", "skybox", "swedishroyalcastle", "mars"
 	var mesh    = THREEx.createSkymap('mars')
-	scene.add( mesh )
+	scene.add( mesh );
 	light(scene);
 	models(scene);
+
 	//scene.fog = new THREE.FogExp2(0x99bbbb, 0.0005);
 
 }
