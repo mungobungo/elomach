@@ -11,9 +11,10 @@ function models(scene) {
 	// instantiate a loader 
 	var loader = new THREE.OBJMTLLoader(); 
 
-	var res = loadObjMtl(scene, loader, 'models/SpaceFighter02/SpaceFighter02');
+	var res1 = loadObjMtl(scene, loader, 'models/Shuttle01/Shuttle01');
+	var res2 = loadObjMtl(scene, loader, 'models/Shuttle02/Shuttle02');
 	
-	var subscription = res.subscribe(
+	var subscription = rx.Observable.merge(res1, res2).subscribe(
   		function (x) { 
   			console.log('onNext: %s', x); 
   	// 		x.traverse(function(x){
