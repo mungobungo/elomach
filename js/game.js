@@ -12,6 +12,8 @@ require('script!./skymap/threex.skymap.js');
 require('script!./skymap/threex.texturecube.js');
 require('script!./skymap/threex.cubetexturehcross.js');
 
+require('script!./threex.minecraft.js');
+
 var _ = require('lodash');
 
 var light = require('./light.js');
@@ -65,9 +67,9 @@ function createScene()
 		NEAR,
 		FAR);
 	camera.position.z = 0;
-	camera.position.y = 0;
+	camera.position.y = 300;
 	camera.position.x = -80;
-	camera.rotation.x = -30 * Math.PI/180;
+	camera.rotation.x = 60 * Math.PI/180;
 	
 	var wr = new winResize(renderer, camera)
 	
@@ -241,6 +243,8 @@ function drawBodies(scene, bodies){
 	var healthTexture = THREE.ImageUtils.loadTexture('textures/health.png');
 	var healthMaterial = new THREE.MeshBasicMaterial({map:healthTexture});		
 
+    
+
 	for(var x in bodies){
 
 		var item = bodies[x];
@@ -249,20 +253,50 @@ function drawBodies(scene, bodies){
 			var geometry = new THREE.SphereGeometry( 10, 4, 4 );
 		
 			var sphere = new THREE.Mesh( geometry, fireballMaterial );
-			sphere.position.y = 100;
+			sphere.position.y = 130;
 			sphere.position.x = item.Shape.Position.X;
 			sphere.position.z = item.Shape.Position.Y;
 			scene.add(sphere);
 		} 
 		if(item.BodyType === 'LifeContainer'){
-			var geometry = new THREE.BoxGeometry( 50, 50, 50 );
+			var geometry = new THREE.SphereGeometry( 30, 10, 10 );
 		
 			var box = new THREE.Mesh( geometry, healthMaterial );
 			box.position.y = 100;
 			box.position.x = item.Shape.Position.X;
 			box.position.z = item.Shape.Position.Y;
 			scene.add(box);
+		}
+		if(item.BodyType === 'NPC'){
+			var player      = new THREEx.MinecraftChar('images/Iron-Man-Minecraft-Skin.png');
+			player.root.position.y = 75;
+			player.root.position.x = item.Shape.Position.X;
+			player.root.position.z = item.Shape.Position.Y;
+
+			player.root.scale.x = player.root.scale.y = player.root.scale.z = 50;
+    		player.root.rotation.y = 60 * Math.PI/180;
+    		scene.add(player.root)	
 		} 
+		if(item.BodyType === 'NPCAI'){
+			var player      = new THREEx.MinecraftChar('images/Joker.png');
+			player.root.position.y = 75;
+			player.root.position.x = item.Shape.Position.X;
+			player.root.position.z = item.Shape.Position.Y;
+			player.root.scale.x = player.root.scale.y = player.root.scale.z = 50;
+			player.root.rotation.y = -30 * Math.PI/180;
+    		scene.add(player.root)	
+		}
+		if(item.BodyType === 'PlayerBody'){
+			var player      = new THREEx.MinecraftChar('images/Mario.png');
+			player.root.position.y = 75;
+			player.root.position.x = item.Shape.Position.X;
+			player.root.position.z = item.Shape.Position.Y;
+			player.root.scale.x = player.root.scale.y = player.root.scale.z = 50;
+			player.root.rotation.y = 110 * Math.PI/180;
+    		scene.add(player.root)	
+		}  
+
+		
 	}
 }
 function objects(){
@@ -456,11 +490,12 @@ function objects(){
             "MaxDimension":20,
             "Position":{  
                "IsZero":false,
-               "X":675,
-               "Y":1275
+               "X":475,
+               "Y":800
+
             }
          },
-         "BodyType":"NPCAI"
+         "BodyType":"NPC"
       },
       {  
          "Direction":{  
@@ -488,8 +523,8 @@ function objects(){
             "MaxDimension":20,
             "Position":{  
                "IsZero":false,
-               "X":875,
-               "Y":1275
+               "X":500,
+               "Y":600
             }
          },
          "BodyType":"NPCAI"
